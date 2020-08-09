@@ -6,15 +6,17 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = (
             'id',
+            'company',
             'first_name',
             'last_name',
             'email',
-            'phone_number'
+            'phone_number',
+            
         )
 
 
 #company serializer
-class CompanySerializer(serializers.Serializer):
+class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
         fields = (

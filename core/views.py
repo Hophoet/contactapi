@@ -14,7 +14,7 @@ from .serializers import ClientSerializer, CompanySerializer
 
 
 
-class TestView(APIView):
+class ContactsListView(APIView):
     
     #permission_classes = (IsAuthenticated,)
 
@@ -31,4 +31,16 @@ class TestView(APIView):
         # if serializer.is_valid():
         #     serializer.save()
         #     return Response(serializer.data)
+
+class ContactDetailView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        client_id = kwargs.get('client_id')
+        client = Client.objects.get(id=client_id)
+        company = client.company
+        # print(contact, contact.company_set.first())
+        client_serializer = ClientSerializer(client)
+        company_serializer = CompanySerializer(company)
+        return Response(data=(client_serializer.data, company_serializer.data))
+
 
