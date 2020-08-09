@@ -16,7 +16,7 @@ from .serializers import ClientSerializer, CompanySerializer
 
 class ContactsListView(APIView):
     
-    #permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         clients = Client.objects.all()
@@ -33,6 +33,7 @@ class ContactsListView(APIView):
         #     return Response(serializer.data)
 
 class ContactDetailView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         client_id = kwargs.get('client_id')
@@ -43,4 +44,23 @@ class ContactDetailView(APIView):
         company_serializer = CompanySerializer(company)
         return Response(data=(client_serializer.data, company_serializer.data))
 
+class ClientSearchView(APIView):
+    permission_classes = (IsAuthenticated,)
+    
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query')
+        if not query:
+            #get all the albums if no search
+            return Response(status=404)
 
+        else:
+            #get the contacts with the query contains
+            clients = Client.objects.filter(first_name__icontains=query)
+        if not clients.exists():
+            #
+            clients = Client.objects.filter(last_name__icontains=query)
+        if not clients.exists():
+             #get all the albums if no search
+            return Response(status=404)
+        clients = ClientSerializer(clients, many=True)
+        return Response(clients.data)
