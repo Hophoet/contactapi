@@ -4,10 +4,11 @@ from django.db import models
 #User model 
 User = get_user_model()
 
-
+#Company(entreprise) model
 class Company(models.Model):
     name = models.CharField(max_length=100)
 
+#Client representation model
 class Client(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)

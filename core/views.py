@@ -1,28 +1,30 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-#
-#from rest_framework.permissions import IsAuthenticated
+#rest
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-#
+#models
 from .models import Client, Company
-#
+
+#serializers
 from .serializers import ClientSerializer, CompanySerializer
 
 
-
+#Contact list view
 class ContactsListView(APIView):
-    
+    #set of the permission classes
     permission_classes = (IsAuthenticated,)
 
+    #get request method
     def get(self, request, *args, **kwargs):
+        #get of all the available clients
         clients = Client.objects.all()
-    
+        #building the serializer with the get clients
         serializer = ClientSerializer(clients, many=True)
-
+        #return the response
         return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
@@ -32,35 +34,45 @@ class ContactsListView(APIView):
         #     serializer.save()
         #     return Response(serializer.data)
 
+#contact detail view
 class ContactDetailView(APIView):
+    #set of the permission
     permission_classes = (IsAuthenticated,)
-
+    #get request method
     def get(self, request, *args, **kwargs):
+        #build client and company object with client id
         client_id = kwargs.get('client_id')
         client = Client.objects.get(id=client_id)
         company = client.company
-        # print(contact, contact.company_set.first())
+        #build serializers by the get objects
         client_serializer = ClientSerializer(client)
         company_serializer = CompanySerializer(company)
+        #return the response
         return Response(data=(client_serializer.data, company_serializer.data))
 
+#client seart view
 class ClientSearchView(APIView):
+    #set of the permission classes
     permission_classes = (IsAuthenticated,)
-    
+    #get request method
     def get(self, request, *args, **kwargs):
+        #get of the url query parameter
         query = request.GET.get('query')
+        #check the existence of the query
         if not query:
-            #get all the albums if no search
+            #return 4040 status error 
             return Response(status=404)
 
         else:
-            #get the contacts with the query contains
+            #search the clients by there first_name
             clients = Client.objects.filter(first_name__icontains=query)
         if not clients.exists():
-            #
+            #search the clients, there last_name
             clients = Client.objects.filter(last_name__icontains=query)
         if not clients.exists():
-             #get all the albums if no search
+            #return 4040 status error 
             return Response(status=404)
+        #build serializer with the get clients
         clients = ClientSerializer(clients, many=True)
+        #return the response
         return Response(clients.data)
