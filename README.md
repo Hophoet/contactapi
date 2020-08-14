@@ -1,12 +1,12 @@
 contactapi
 ===================
 
-Documentation
+Description
 -------------
-Contactapi is a django project for the contacts management
+Contactapi is a django api project for the contacts management
 
 
-# Getting contactapi
+## Getting contactapi
 
 ### The Easy Way
 
