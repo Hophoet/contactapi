@@ -9,7 +9,7 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         #set of the usable fields
         fields = (
-            'id',
+            'id', 
             'company',
             'first_name',
             'last_name',
